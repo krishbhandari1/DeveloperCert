@@ -14,6 +14,7 @@ namespace DeveloperCert
         private static string userName, password;
         private static string accessToken;
         private static string firstName, lastName, pp, dpPercent, rate,term;
+        private static string loanNumber, appId, checkingBalance, mutualFundBalance;
         private static string loanId;
         static void Main(string[] args)
         {
@@ -54,6 +55,19 @@ namespace DeveloperCert
             accessToken = GetAccessToken();
             Console.WriteLine("The access token is: " + accessToken);
             Console.ReadLine();
+        }
+        private static void AddVOD()
+        {
+            Console.WriteLine("Loan Number:");
+            loanNumber = Console.ReadLine();
+            Console.WriteLine("Application ID:");
+            appId = Console.ReadLine();
+            Console.WriteLine("Checking Account Balance:");
+            checkingBalance = Console.ReadLine();
+            Console.WriteLine("Mutual Fund Balance:");
+            mutualFundBalance = Console.ReadLine();
+            var task3 = AddVODExisting(loanNumber, appId, checkingBalance, mutualFundBalance);
+            Task.WaitAll(task3);
         }
         
     }
