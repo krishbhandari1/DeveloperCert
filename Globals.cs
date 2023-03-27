@@ -90,5 +90,75 @@ namespace DeveloperCert
             //Set the lnId variable to the extracted lnId as a string
             lnId = loanGuid.ToString();
         }
+        public static async Task AddVODExisting(string loanNumber, string appId, string checkingBalance, string mutualFundBalance)
+        {
+            var options = new RestClientOptions("https://api.elliemae.com")
+            {
+                MaxTimeout = -1,
+            };
+            var client = new RestClient(options);
+            var request = new RestRequest("/encompass/v3/loans/{loan}/applications/{app}/vods?action=add&view=entity", Method.Patch)
+                .AddUrlSegment("loan", loanNumber)
+                .AddUrlSegment("app", appId);
+            request.AddHeader("Authorization", "Bearer " + token);
+            request.AddHeader("Content-Type", "application/json");
+
+            var body = @"[ {
+            " + "\n" +
+                        @"                    ""holderName"": ""ICE Lending"",
+            " + "\n" +
+                        @"                    ""holderAddressStreetLine1"": ""2210 Main Street"",
+            " + "\n" +
+                        @"                    ""holderAddressCity"": ""Waukesha"",
+            " + "\n" +
+                        @"                    ""holderAddressState"": ""WI"",
+            " + "\n" +
+                        @"                    ""holderAddressPostalCode"": 53188,
+            " + "\n" +
+                        @"                    ""owner"": ""Borrower"",
+            " + "\n" +
+                        @"                    ""items"": [
+            " + "\n" +
+                        @"            {
+            " + "\n" +
+                        @"                ""itemNumber"": 1,
+            " + "\n" +
+                        @"                ""type"": ""CheckingAccount"",
+            " + "\n" +
+                        @"                ""accountIdentifier"": ""128450-25"",
+            "
+            + "\n" +
+                        @"                ""urla2020CashOrMarketValueAmount"":""" + checkingBalance + @" "",
+            " + "\n" +
+                        @"                ""depositoryAccountName"": ""Krish Tester""
+            " + "\n" +
+                        @"            },
+            " + "\n" +
+                        @"            {
+            " + "\n" +
+                        @"                ""itemNumber"": 2,
+            " + "\n" +
+                        @"                ""type"": ""Mutual Fund"",
+            " + "\n" +
+                        @"                ""accountIdentifier"": ""128450-26"",
+            " + "\n" +
+                        @"                ""urla2020CashOrMarketValueAmount"": """ + mutualFundBalance + @" "",
+            " + "\n" +
+                        @"                ""depositoryAccountName"": ""Krish Tester""
+            " + "\n" +
+                        @"            }
+            " + "\n" +
+                        @"          
+            " + "\n" +
+                        @"        ]
+            " + "\n" +
+                        @"    }
+            " + "\n" +
+                        @"]";
+            request.AddStringBody(body, DataFormat.Json);
+            RestResponse response = await client.ExecuteAsync(request);
+            Console.WriteLine(response.Content);
+            Console.ReadLine();
+        }
     }
 }
